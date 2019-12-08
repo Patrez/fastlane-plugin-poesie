@@ -1,0 +1,7 @@
+lane :test do
+  poesie(
+    api_token: "b9a72de90ec08bc948b6739e87f75d3b",
+    project_id: "249145",
+    languages: ["cs"],
+    string_files_path: "./../unt.txt")
+end
