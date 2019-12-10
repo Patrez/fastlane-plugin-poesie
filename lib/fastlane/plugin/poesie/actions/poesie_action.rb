@@ -1,4 +1,3 @@
-require 'fastlane/action'
 require 'poesie'
 
 module Fastlane
@@ -6,7 +5,11 @@ module Fastlane
     class PoesieAction < Action
       def self.run(params)
         exporter = ::Poesie::Exporter.new(params[:api_token], params[:project_id])
-        params[:languages].each do |language|
+        languages = params[:languages]
+        if languages.nil?
+          languages = Helper::PoesieHelper.list_of_languages(params[:api_token], params[:project_id])
+        end
+        languages.each do |language|
           ::Poesie::Log::title("== Language #{language} ==")
           string_path = params[:string_files_path] + language + ".lproj/Localizable.strings"
           exporter.run(language) do |terms|
@@ -53,7 +56,7 @@ module Fastlane
           FastlaneCore::ConfigItem.new(key: :languages,
             env_name: "POEDITOR_SUPPORTED_LANGUAGES",
             description: "The languages to export",
-            optional: false,
+            optional: true,
             type: Array),
           FastlaneCore::ConfigItem.new(key: :string_files_path,
             env_name: "PROJECT_STRING_FILES_PATH",
