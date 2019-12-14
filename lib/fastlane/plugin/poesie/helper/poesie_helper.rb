@@ -20,8 +20,26 @@ module Fastlane
         json["result"]["languages"].map { |lan| lan["code"] }
       end
 
-      def test
-        puts "wtf"
+      def self.path_for_localized_file(languages, filename = nil)
+        require 'find'
+
+        if filename.nil?
+          filename = "Localizable.strings"
+        end
+        paths = {}
+        Find.find(Dir.pwd) do |path|
+          if FileTest.file?(path) && File.basename(path) == filename
+            languages.each { |lang|
+              if File.basename(File.dirname(path)) == "#{lang}.lproj"
+                paths[lang] = path
+              end
+            }
+            Find.prune
+          else
+            next
+          end
+        end
+        paths
       end
     end
   end

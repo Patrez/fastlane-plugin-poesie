@@ -9,9 +9,17 @@ module Fastlane
         if languages.nil?
           languages = Helper::PoesieHelper.list_of_languages(params[:api_token], params[:project_id])
         end
+
+        paths = Helper::PoesieHelper.path_for_localized_file(languages, params[:strings_file_name])
+
+        if paths.count != languages.count
+          ::Poesie.exit_with_error("Error while finding localized files.\nSearching for languages: #{languages}\nFound: #{paths.keys
+            }}")
+        end
+
         languages.each do |language|
           ::Poesie::Log::title("== Language #{language} ==")
-          string_path = params[:string_files_path] + language + ".lproj/Localizable.strings"
+          string_path = paths[language]
           exporter.run(language) do |terms|
             # Localizable.strings
             ::Poesie::AppleFormatter::write_strings_file(
@@ -58,10 +66,10 @@ module Fastlane
             description: "The languages to export",
             optional: true,
             type: Array),
-          FastlaneCore::ConfigItem.new(key: :string_files_path,
-            env_name: "PROJECT_STRING_FILES_PATH",
-            description: "The path to localized string files",
-            optional: false,
+          FastlaneCore::ConfigItem.new(key: :strings_file_name,
+            env_name: "PROJECT_STRING_FILE_NAME",
+            description: "Name of a localized .strings file. Default is Localizable.strings",
+            optional: true,
             type: String)
         ]
       end
