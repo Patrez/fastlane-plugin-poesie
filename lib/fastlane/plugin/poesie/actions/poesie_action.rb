@@ -10,7 +10,7 @@ module Fastlane
           languages = Helper::PoesieHelper.list_of_languages(params[:api_token], params[:project_id])
         end
 
-        paths = Helper::PoesieHelper.path_for_localized_file(languages, params[:strings_file_name])
+        paths = Helper::PoesieHelper.path_for_localized_file(languages, params[:strings_file_name], params[:strings_path])
 
         if paths.count != languages.count
           ::Poesie.exit_with_error("Error while finding localized files.\nSearching for languages: #{languages}\nFound: #{paths.keys
@@ -46,7 +46,7 @@ module Fastlane
       end
 
       def self.authors
-        ["Patrik Potoček"]
+        ["Patrik Potoček", "Adam Bezák"]
       end
 
       def self.available_options
@@ -69,6 +69,11 @@ module Fastlane
           FastlaneCore::ConfigItem.new(key: :strings_file_name,
             env_name: "PROJECT_STRING_FILE_NAME",
             description: "Name of a localized .strings file. Default is Localizable.strings",
+            optional: true,
+            type: String),
+          FastlaneCore::ConfigItem.new(key: :strings_path,
+            env_name: "PROJECT_STRING_PATH",
+            description: "Path of a localized .strings file",
             optional: true,
             type: String)
         ]
