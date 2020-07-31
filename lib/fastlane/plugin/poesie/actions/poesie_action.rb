@@ -73,7 +73,7 @@ module Fastlane
             type: String),
           FastlaneCore::ConfigItem.new(key: :strings_path,
             env_name: "PROJECT_STRING_PATH",
-            description: "Path of a localized .strings file",
+            description: "Path to a directory where poesie will search for .string files",
             optional: true,
             type: String)
         ]
